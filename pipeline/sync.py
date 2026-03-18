@@ -4,7 +4,7 @@ from datetime import timezone, datetime
 from supabase import create_client
 from dotenv import load_dotenv
 from pipeline.fetch import refresh_access_token, fetch_invoices
-from validate import validate
+from pipeline.validate import validate
 
 load_dotenv()
 
