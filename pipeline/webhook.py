@@ -2,6 +2,7 @@ import os
 import hmac
 import hashlib
 import json
+import base64
 from fastapi import FastAPI, Request, HTTPException, BackgroundTasks
 from dotenv import load_dotenv
 from pipeline.sync import sync_invoices
@@ -15,17 +16,16 @@ app = FastAPI()
 
 def verify_webhook_signature(payload: bytes, signature: str) -> bool:
     """
-    QuickBooks signs every webhook payload with HMAC-SHA256
-    using your verifier token. We must verify this signature
-    before processing — otherwise anyone could trigger our sync.
+    QuickBooks signs payload with HMAC-SHA256 and encodes 
+    the result as base64 — not hex. Must decode before comparing.
     """
-    expected = hmac.new(
-        WEBHOOK_VERIFIER_TOKEN.encode("utf-8"),
-        payload,
-        hashlib.sha256
-    ).hexdigest()
+    mac = hmac.new(
+        key=WEBHOOK_VERIFIER_TOKEN.encode("utf-8"),
+        msg=payload,
+        digestmod=hashlib.sha256
+    )
+    expected = base64.b64encode(mac.digest()).decode("utf-8")
     return hmac.compare_digest(expected, signature)
-
 
 @app.get("/health")
 def health():
