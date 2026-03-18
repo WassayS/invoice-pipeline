@@ -4,7 +4,7 @@ import hashlib
 import json
 from fastapi import FastAPI, Request, HTTPException, BackgroundTasks
 from dotenv import load_dotenv
-from sync import sync_invoices
+from pipeline.sync import sync_invoices
 
 load_dotenv()
 
