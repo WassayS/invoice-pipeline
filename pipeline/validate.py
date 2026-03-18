@@ -3,7 +3,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 from supabase import create_client
 from dotenv import load_dotenv
-from fetch import refresh_access_token
+from pipeline.fetch import refresh_access_token
 
 load_dotenv()
 
